@@ -1,0 +1,19 @@
+{
+  "name": "winter-wind",
+  "version": "1.0.0",
+  "description": "It's a DI container with AOP support",
+  "main": "lib/index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "rm -rf lib/* && babel src/ -d lib/ && node gen-flow-files.js",
+    "prepublish": "yarn run build"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-flow": "^6.23.0",
+    "flow-bin": "^0.61.0",
+    "mocha": "^4.0.1",
+    "nyc": "^11.4.1"
+  },
+  "dependencies": {}
+}
