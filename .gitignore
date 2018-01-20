@@ -13,3 +13,7 @@ node_modules/
 
 # Test
 .nyc*
+
+#build
+lib/*
+!lib/.gitkeep

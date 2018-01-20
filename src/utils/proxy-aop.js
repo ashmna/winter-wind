@@ -7,7 +7,7 @@ class PropertyNotFound extends Error {
 }
 
 class ProxyMethodHandler {
-    apply(target, thisArgument, argumentsList: any[]) {
+    apply(target: any, thisArgument: any, argumentsList: any[]): any {
         try {
             const before = this.before(target, thisArgument, argumentsList);
 
@@ -46,21 +46,21 @@ class ProxyMethodHandler {
         }
     }
 
-    before(target, thisArgument, argumentsList): { callable: boolean, result?: any } {
+    before(target: any, thisArgument: any, argumentsList: any[]): { callable: boolean, result?: any } {
         return {callable: true};
     }
 
-    after(target, thisArgument, argumentsList, result: any): any {
+    after(target: any, thisArgument: any, argumentsList: any[], result: any): any {
         return result
     }
 
-    exceptionHandler(error): { throwable: boolean, result?: any } {
+    exceptionHandler(error: Error): { throwable: boolean, result?: any } {
         return {throwable: true, result: void 0};
     }
 }
 
 class ProxyClassHandler {
-    get(target, property) {
+    get(target: any, property: string) {
         if (!(property in target)) {
             throw new PropertyNotFound(property, target.constructor.name);
         }
@@ -70,7 +70,7 @@ class ProxyClassHandler {
         return new Proxy(target[property], this.getProxyMethodHandler());
     }
 
-    getProxyMethodHandler() {
+    getProxyMethodHandler(): any {
         return new ProxyMethodHandler();
     }
 }
