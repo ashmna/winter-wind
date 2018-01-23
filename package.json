@@ -13,7 +13,8 @@
     "babel-preset-flow": "^6.23.0",
     "flow-bin": "^0.61.0",
     "mocha": "^4.0.1",
-    "nyc": "^11.4.1"
+    "nyc": "^11.4.1",
+    "prettier": "1.10.2"
   },
   "dependencies": {}
 }
