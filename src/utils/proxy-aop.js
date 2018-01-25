@@ -1,4 +1,4 @@
-const {isPromise} = require("./is-promise");
+const { isPromise } = require("./is-promise");
 
 class PropertyNotFound extends Error {
     constructor(property, className) {
@@ -19,26 +19,28 @@ class ProxyMethodHandler {
 
             if (isPromise(result)) {
                 return new Promise((resolve, reject) => {
-                    result.then(result => {
-                        resolve(this.after(target, thisArgument, argumentsList, result));
-                    }).catch(error => {
-                        try {
-                            const {throwable = true, result} = this.exceptionHandler(error);
-                            if (!throwable) {
-                                resolve(result);
-                                return;
+                    result
+                        .then(result => {
+                            resolve(this.after(target, thisArgument, argumentsList, result));
+                        })
+                        .catch(error => {
+                            try {
+                                const { throwable = true, result } = this.exceptionHandler(error);
+                                if (!throwable) {
+                                    resolve(result);
+                                    return;
+                                }
+                                reject(error);
+                            } catch (error) {
+                                reject(error);
                             }
-                            reject(error);
-                        } catch (error) {
-                            reject(error);
-                        }
-                    });
+                        });
                 });
             }
 
             return this.after(target, thisArgument, argumentsList, result);
         } catch (error) {
-            const {throwable = true, result} = this.exceptionHandler(error);
+            const { throwable = true, result } = this.exceptionHandler(error);
             if (!throwable) {
                 return result;
             }
@@ -47,15 +49,15 @@ class ProxyMethodHandler {
     }
 
     before(target: any, thisArgument: any, argumentsList: any[]): { callable: boolean, result?: any } {
-        return {callable: true};
+        return { callable: true };
     }
 
     after(target: any, thisArgument: any, argumentsList: any[], result: any): any {
-        return result
+        return result;
     }
 
     exceptionHandler(error: Error): { throwable: boolean, result?: any } {
-        return {throwable: true, result: void 0};
+        return { throwable: true, result: void 0 };
     }
 }
 

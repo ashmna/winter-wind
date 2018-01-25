@@ -1,6 +1,6 @@
 // @flow
 
-const {PostProcessor} = require("./post-processor");
+const { PostProcessor } = require("./post-processor");
 
 const SINGLETON = 0x01;
 const PROTOTYPE = 0x02;
@@ -9,9 +9,9 @@ const SESSION = 0x03;
 type Scope = SINGLETON | PROTOTYPE | SESSION;
 
 type InjectableOption = {
-    scope: Scope;
-    dependencies?: ObjectConstructor[];
-}
+    scope: Scope,
+    dependencies?: ObjectConstructor[],
+};
 
 type InMapParams = {
     option: InjectableOption,
@@ -23,7 +23,7 @@ const injectableClasses: Map<string, InMapParams> = new Map();
 
 function Injectable(option: InjectableOption) {
     return (constructor: ObjectConstructor) => {
-        injectableClasses.set(constructor.name, {option, constructor});
+        injectableClasses.set(constructor.name, { option, constructor });
     };
 }
 
@@ -33,7 +33,7 @@ Injectable.SESSION = SESSION;
 
 class NotInjectableError extends Error {
     constructor(constructor: ObjectConstructor) {
-        super(`Class "${constructor.name}" does not exist or not make as Injectable`)
+        super(`Class "${constructor.name}" does not exist or not make as Injectable`);
     }
 }
 
@@ -73,7 +73,7 @@ class Container {
     }
 
     createInstance<T>(constructor: T, dependencies: ObjectConstructor[] = []): T {
-        const instance = new ({[constructor.name]: constructor})[constructor.name](
+        const instance = new { [constructor.name]: constructor }[constructor.name](
             ...dependencies.map(dependency => this.get(dependency))
         );
 
@@ -81,16 +81,19 @@ class Container {
     }
 
     beforeInitialization<T>(instance: T): T {
-        return this[postProcessors]
-            .reduce((instance, postProcessor) => postProcessor.beforeInitialization(instance), instance);
+        return this[postProcessors].reduce(
+            (instance, postProcessor) => postProcessor.beforeInitialization(instance),
+            instance
+        );
     }
 
     afterInitialization<T>(instance: T): T {
-        return this[postProcessors]
-            .reduce((instance, postProcessor) => postProcessor.afterInitialization(instance), instance);
+        return this[postProcessors].reduce(
+            (instance, postProcessor) => postProcessor.afterInitialization(instance),
+            instance
+        );
     }
 }
-
 
 module.exports = {
     Injectable,

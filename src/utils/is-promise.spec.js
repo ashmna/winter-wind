@@ -1,7 +1,6 @@
-const {describe, it} = require("mocha");
-const {strictEqual} = require("assert");
-const {isPromise} = require("./is-promise");
-
+const { describe, it } = require("mocha");
+const { strictEqual } = require("assert");
+const { isPromise } = require("./is-promise");
 
 describe("Test isPromise", () => {
     it("static types", done => {
@@ -19,15 +18,12 @@ describe("Test isPromise", () => {
     });
     it("object and function", done => {
         strictEqual(isPromise({}), false);
-        strictEqual(isPromise(function () {
-        }), false);
-        strictEqual(isPromise(() => {
-        }), false);
+        strictEqual(isPromise(function() {}), false);
+        strictEqual(isPromise(() => {}), false);
         done();
     });
     it("promise", done => {
-        strictEqual(isPromise(new Promise(resolve => {
-        })), true);
+        strictEqual(isPromise(new Promise(resolve => {})), true);
         done();
     });
 });

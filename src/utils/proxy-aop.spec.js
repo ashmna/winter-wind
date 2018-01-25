@@ -1,6 +1,5 @@
-
-const {describe, it} = require("mocha");
-const {proxyClassHandler, proxyMethodHandler} = require("./proxy-aop");
+const { describe, it } = require("mocha");
+const { proxyClassHandler, proxyMethodHandler } = require("./proxy-aop");
 
 class Test {
     method() {
@@ -12,7 +11,6 @@ class Test {
         return 1;
     }
 }
-
 
 describe("Proxy", () => {
     it("ProxyClass", async done => {

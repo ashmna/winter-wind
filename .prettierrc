@@ -1,11 +1,9 @@
 {
     "useTabs": false,
-    "printWidth": 80,
+    "printWidth": 120,
     "tabWidth": 4,
     "singleQuote": false,
     "trailingComma": "es5",
     "jsxBracketSameLine": false,
-    "parser": "flow",
-    "noSemi": false,
-    "rcVerbose": false
+    "parser": "flow"
 }

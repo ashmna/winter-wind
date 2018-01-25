@@ -1,13 +1,9 @@
 // @flow
 
 class PostProcessor {
-    beforeInitialization(instance: any) {
+    beforeInitialization(instance: any) {}
 
-    }
-
-    afterInitialization(instance: any) {
-
-    }
+    afterInitialization(instance: any) {}
 }
 
 module.exports = {
