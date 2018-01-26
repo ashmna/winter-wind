@@ -1,3 +1,5 @@
+// @flow
+
 const { isPromise } = require("./is-promise");
 
 class PropertyNotFound extends Error {
@@ -7,7 +9,7 @@ class PropertyNotFound extends Error {
 }
 
 class ProxyMethodHandler {
-    apply(target: any, thisArgument: any, argumentsList: any[]): any {
+    apply(target: Object, thisArgument: any, argumentsList: any[]): any {
         try {
             const before = this.before(target, thisArgument, argumentsList);
 
@@ -48,11 +50,11 @@ class ProxyMethodHandler {
         }
     }
 
-    before(target: any, thisArgument: any, argumentsList: any[]): { callable: boolean, result?: any } {
+    before(target: Object, thisArgument: any, argumentsList: any[]): { callable: boolean, result?: any } {
         return { callable: true };
     }
 
-    after(target: any, thisArgument: any, argumentsList: any[], result: any): any {
+    after(target: Object, thisArgument: any, argumentsList: any[], result: any): any {
         return result;
     }
 
@@ -61,8 +63,8 @@ class ProxyMethodHandler {
     }
 }
 
-class ProxyClassHandler {
-    get(target: any, property: string) {
+class ProxyClassHandler<T: Object> {
+    get(target: T, property: string, receiver: Proxy<T>) {
         if (!(property in target)) {
             throw new PropertyNotFound(property, target.constructor.name);
         }

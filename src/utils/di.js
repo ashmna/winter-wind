@@ -1,66 +1,32 @@
 // @flow
 
 const { PostProcessor } = require("./post-processor");
-
-const SINGLETON = 0x01;
-const PROTOTYPE = 0x02;
-const SESSION = 0x03;
-
-type Scope = SINGLETON | PROTOTYPE | SESSION;
-
-type InjectableOption = {
-    scope: Scope,
-    dependencies?: ObjectConstructor[],
-};
-
-type InMapParams = {
-    option: InjectableOption,
-    constructor: ObjectConstructor,
-    instance?: any,
-};
-
-const injectableClasses: Map<string, InMapParams> = new Map();
-
-function Injectable(option: InjectableOption) {
-    return (constructor: ObjectConstructor) => {
-        injectableClasses.set(constructor.name, { option, constructor });
-    };
-}
-
-Injectable.SINGLETON = SINGLETON;
-Injectable.PROTOTYPE = PROTOTYPE;
-Injectable.SESSION = SESSION;
-
-class NotInjectableError extends Error {
-    constructor(constructor: ObjectConstructor) {
-        super(`Class "${constructor.name}" does not exist or not make as Injectable`);
-    }
-}
-
-const postProcessors = new Symbol("postProcessors");
+const { Injectable, NotInjectableError, injectableClasses } = require("./injectable");
 
 class Container {
-    [postProcessors]: PostProcessor[];
+    postProcessors: PostProcessor[];
 
     constructor() {
-        this[postProcessors] = [];
+        this.postProcessors = [];
     }
 
     enablePostProcessor(postProcessor: PostProcessor) {
-        this[postProcessors].push(postProcessor);
+        this.postProcessors.push(postProcessor);
     }
 
-    get<T>(constructor: T): T {
-        if (!injectableClasses.has(constructor.name)) {
+    get<T: Object.constructor>(constructor: T) {
+        const params = injectableClasses.get(constructor.name);
+        if (!params) {
             throw new NotInjectableError(constructor);
         }
-        const params = injectableClasses.get(constructor.name);
-        if (params.option.scope === PROTOTYPE) {
+
+        if (params.option.scope === Injectable.PROTOTYPE) {
             return this.createInstance(constructor, params.option.dependencies);
         }
 
         // todo: implement SESSION scope
-        if (params.option.scope !== SINGLETON) {
+
+        if (params.option.scope !== Injectable.SINGLETON) {
             return this.createInstance(constructor, params.option.dependencies);
         }
 
@@ -72,7 +38,7 @@ class Container {
         return params.instance;
     }
 
-    createInstance<T>(constructor: T, dependencies: ObjectConstructor[] = []): T {
+    createInstance<T: Object.constructor>(constructor: T, dependencies: Object.constructor[] = []) {
         const instance = new { [constructor.name]: constructor }[constructor.name](
             ...dependencies.map(dependency => this.get(dependency))
         );
@@ -80,22 +46,19 @@ class Container {
         return this.afterInitialization(this.beforeInitialization(instance));
     }
 
-    beforeInitialization<T>(instance: T): T {
-        return this[postProcessors].reduce(
-            (instance, postProcessor) => postProcessor.beforeInitialization(instance),
+    beforeInitialization<T: Object>(instance: T): T {
+        return this.postProcessors.reduce(
+            (instance: T, postProcessor: PostProcessor) => postProcessor.beforeInitialization(instance),
             instance
         );
     }
 
-    afterInitialization<T>(instance: T): T {
-        return this[postProcessors].reduce(
-            (instance, postProcessor) => postProcessor.afterInitialization(instance),
+    afterInitialization<T: Object>(instance: T): T {
+        return this.postProcessors.reduce(
+            (instance: T, postProcessor: PostProcessor) => postProcessor.afterInitialization(instance),
             instance
         );
     }
 }
 
-module.exports = {
-    Injectable,
-    Container,
-};
+module.exports = { Container };
