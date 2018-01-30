@@ -8,8 +8,8 @@ class PropertyNotFound extends Error {
     }
 }
 
-class ProxyMethodHandler {
-    apply(target: Object, thisArgument: any, argumentsList: any[]): any {
+class ProxyMethodHandler<T: Object> {
+    apply(target: T, thisArgument: any, argumentsList: any[]): any {
         try {
             const before = this.before(target, thisArgument, argumentsList);
 
@@ -50,11 +50,11 @@ class ProxyMethodHandler {
         }
     }
 
-    before(target: Object, thisArgument: any, argumentsList: any[]): { callable: boolean, result?: any } {
+    before(target: T, thisArgument: any, argumentsList: any[]): { callable: boolean, result?: any } {
         return { callable: true };
     }
 
-    after(target: Object, thisArgument: any, argumentsList: any[], result: any): any {
+    after(target: T, thisArgument: any, argumentsList: any[], result: any): any {
         return result;
     }
 

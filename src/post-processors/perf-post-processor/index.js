@@ -12,6 +12,6 @@ class PerformancePostProcessor extends PostProcessor {
     }
 
     afterInitialization<T: Object>(instance: T): T {
-        return new Proxy(instance, new PerformanceProxyClassHandler());
+        return new Proxy(instance, (new PerformanceProxyClassHandler(): any));
     }
 }
