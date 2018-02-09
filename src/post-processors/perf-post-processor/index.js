@@ -1,17 +1,18 @@
 // @flow
 
-const { PostProcessor, ProxyClassHandler, ProxyMethodHandler } = require("../../index");
-
-class PerformanceProxyClassHandler<T: Object> extends ProxyClassHandler<T> {}
-
-class PerformanceProxyMethodHandler<T: Object> extends ProxyMethodHandler<T> {}
+const { PostProcessor } = require("../../index");
+const { PerformanceProxyClassHandler } = require("./proxy");
 
 class PerformancePostProcessor extends PostProcessor {
-    beforeInitialization<T: Object>(instance: T): T {
-        return instance;
+    afterInitialization<T: Object>(instance: T): T {
+        return new Proxy(instance, (new PerformanceProxyClassHandler(this): any));
     }
 
-    afterInitialization<T: Object>(instance: T): T {
-        return new Proxy(instance, (new PerformanceProxyClassHandler(): any));
+    register<T: Object>(target: T, thisArgument: any, startAt: number, endAt: number) {
+        console.log(endAt - startAt, target, thisArgument);
     }
 }
+
+module.exports = {
+    PerformancePostProcessor,
+};

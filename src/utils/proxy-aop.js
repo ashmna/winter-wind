@@ -23,7 +23,7 @@ class ProxyMethodHandler<T: Object> {
                 return new Promise((resolve, reject) => {
                     result
                         .then(result => {
-                            resolve(this.after(target, thisArgument, argumentsList, result));
+                            resolve(this.after(target, thisArgument, argumentsList, result, before.params));
                         })
                         .catch(error => {
                             try {
@@ -40,7 +40,7 @@ class ProxyMethodHandler<T: Object> {
                 });
             }
 
-            return this.after(target, thisArgument, argumentsList, result);
+            return this.after(target, thisArgument, argumentsList, result, before.params);
         } catch (error) {
             const { throwable = true, result } = this.exceptionHandler(error);
             if (!throwable) {
@@ -50,11 +50,11 @@ class ProxyMethodHandler<T: Object> {
         }
     }
 
-    before(target: T, thisArgument: any, argumentsList: any[]): { callable: boolean, result?: any } {
-        return { callable: true };
+    before(target: T, thisArgument: any, argumentsList: any[]): { callable: boolean, params: Object, result?: any } {
+        return { callable: true, params: {} };
     }
 
-    after(target: T, thisArgument: any, argumentsList: any[], result: any): any {
+    after(target: T, thisArgument: any, argumentsList: any[], result: any, params: Object): any {
         return result;
     }
 
